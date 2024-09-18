@@ -1,16 +1,4 @@
-from User import User
-
-
-user1 = User('Pedro', 'aaaa@gmail.com', 123)
-user1.newHighScore(600)
-user2 = User('Jao', 'aaaa@gmail.com', 456)
-user2.newHighScore(350)
-user3 = User('Jorge', 'aaaa@gmail.com', 789)
-user3.newHighScore(350)
-user4 = User('Alice', 'aaaa@gmail.com', 101112)
-user4.newHighScore(800)
-
-rankingTree = {}
+from user import User
 
 def insertUserInRanking(rankingTree, user):
     while rankingTree != {}:
@@ -19,7 +7,7 @@ def insertUserInRanking(rankingTree, user):
         elif rankingTree['root'][0] < user.highestScore:
             rankingTree = rankingTree['right']
         else:
-            for i in range(len(rankingTree['root'])): # Verifica se usuario ja esta entre os usuarios com aquele mesmo score
+            for i in range(1, len(rankingTree['root'])): # Verifica se usuario ja esta entre os usuarios com aquele mesmo score
                 if rankingTree['root'][i].cpf == user.cpf:
                     print(f"Usuario {user.cpf} ja esta no ranking!")
                     return
@@ -44,7 +32,6 @@ def searchUsersInRanking(rankingTree, score):
 
 def deleteUserFromRanking(rankingTree, user):
     usersScoreList = searchUsersInRanking(rankingTree, user.highestScore)
-    print(usersScoreList)
     if len(usersScoreList) > 1:
         for i in range(1, len(usersScoreList)):  # Pular o primeiro elemento (que é o score)
             if usersScoreList[i].cpf == user.cpf:
@@ -55,8 +42,12 @@ def updateUserRanking(rankingTree, user):
     deleteUserFromRanking(rankingTree, user)
     insertUserInRanking(rankingTree, user)
 
+rankingTree = {}
 
-
+user1 = User('Pedro', 'aaaa@gmail.com', 123)
+user2 = User('Jao', 'aaaa@gmail.com', 456)
+user3 = User('Jorge', 'aaaa@gmail.com', 789)
+user4 = User('Alice', 'aaaa@gmail.com', 101112)
 
 print(rankingTree)
 
@@ -67,6 +58,13 @@ insertUserInRanking(rankingTree, user1)
 
 print(rankingTree)
 
+user1.newHighScore(600)
+user2.newHighScore(350)
+user3.newHighScore(350)
+user4.newHighScore(800)
+updateUserRanking(rankingTree, user1)
 updateUserRanking(rankingTree, user2)
+updateUserRanking(rankingTree, user3)
+updateUserRanking(rankingTree, user4)
 
 print(rankingTree)
