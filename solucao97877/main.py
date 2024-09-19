@@ -1,5 +1,5 @@
 from user import User
-from module import insertUserInRanking
+from module import insert_user_in_ranking, update_user_high_score
 
 user1 = User('Pedro', 'aaaa@gmail.com', 123)
 user2 = User('Jao', 'aaaa@gmail.com', 456)
@@ -9,34 +9,30 @@ user5 = User('Beatriz', 'aaaa@gmail.com', 131415)
 user6 = User('Joana', 'aaaa@gmail.com', 161718)
 
 rankingTree = {
-    'root' : [800, user1],
-    'left' : {
-        'root' : [350, user2, user3],
-        'left' : {},
-        'right' : {}
-    },
+    'root' : [800],
+    'left' : {},
     'right' : {}
 }
 
 print(f'\n=#=#=#=#=#=#=#=INICIAL TREE=#=#=#=#=#=#=#=#=#=#=')
 print(rankingTree)
 
-insertUserInRanking(rankingTree, user4)
-insertUserInRanking(rankingTree, user5)
-insertUserInRanking(rankingTree, user6)
-insertUserInRanking(rankingTree, user3)
-insertUserInRanking(rankingTree, user2)
-insertUserInRanking(rankingTree, user1)
+insert_user_in_ranking(rankingTree, user4)
+insert_user_in_ranking(rankingTree, user5)
+insert_user_in_ranking(rankingTree, user6)
+insert_user_in_ranking(rankingTree, user3)
+insert_user_in_ranking(rankingTree, user2)
+insert_user_in_ranking(rankingTree, user1)
 
 print(f'\n=#=#=#=#=#=#=#=USERS INSERTED=#=#=#=#=#=#=#=#=#=#=')
 print(rankingTree)
 
-user1.newHighScore(800, rankingTree)
-user2.newHighScore(350, rankingTree)
-user3.newHighScore(350, rankingTree)
-user4.newHighScore(120, rankingTree)
-user5.newHighScore(1800, rankingTree)
-user6.newHighScore(100, rankingTree)
+update_user_high_score(rankingTree,user1,800)
+update_user_high_score(rankingTree,user2,350)
+update_user_high_score(rankingTree,user3,350)
+update_user_high_score(rankingTree,user4,120)
+update_user_high_score(rankingTree,user5,1800)
+update_user_high_score(rankingTree,user6,100)
 
 print(f'\n=#=#=#=#=#=#=#=USERS SCORE UPDATED=#=#=#=#=#=#=#=#=#=#=')
 print(rankingTree)

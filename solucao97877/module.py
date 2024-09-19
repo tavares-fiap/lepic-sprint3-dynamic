@@ -1,40 +1,43 @@
-def insertUserInRanking(rankingTree, user):
-    while rankingTree != {}:
-        if rankingTree['root'][0] > user.highestScore:
-            rankingTree = rankingTree['left']
-        elif rankingTree['root'][0] < user.highestScore:
-            rankingTree = rankingTree['right']
-        else:
-            for i in range(1, len(rankingTree['root'])): # Verifica se usuario ja esta entre os usuarios com aquele mesmo score
-                if rankingTree['root'][i].cpf == user.cpf:
-                    print(f"Usuario {user.cpf} ja esta no ranking!")
-                    return
-            rankingTree['root'].append(user) # Se nao estiver, adiciona usuario aquela posicao
-            return
-    rankingTree['root'] = [user.highestScore, user] # Se for Score completamente novo, cria nova ramificacao da arvore
-    rankingTree['left'] = {}
-    rankingTree['right'] = {}
-    # print("\n=#=#=#=#=#=#=#=DEPURACAO INSERT USER=#=#=#=#=#=#=#=#=#=#=")
-    # print(rankingTree)
+from typing import Union, Dict, List
+from user import User
+
+def search_users_in_ranking(ranking_tree : dict, score : int) -> Union[Dict, List]:
+    if ranking_tree == {}:
+        return ranking_tree
+    if ranking_tree['root'][0] > score:
+        return search_users_in_ranking(ranking_tree['left'], score)
+    elif ranking_tree['root'][0] < score:
+        return search_users_in_ranking(ranking_tree['right'], score)
+    else:
+        return ranking_tree['root']
+    
+def insert_user_in_ranking(ranking_tree : dict, user : User):
+    users_with_same_score = search_users_in_ranking(ranking_tree, user.highest_score)
+    # Verificação se 'search_users_in_ranking' devolveu uma lista
+    if isinstance(users_with_same_score, list):
+        for existing_user in users_with_same_score[1:]:
+            if existing_user.cpf == user.cpf:
+                print(f"Usuário {user.cpf} já está nessa posicao do ranking!")
+                return
+        users_with_same_score.append(user)  # Adiciona o usuário à lista
+    else:
+        # Novo score, cria um novo nó na árvore
+        users_with_same_score['root'] = [user.highest_score, user]
+        users_with_same_score['left'] = {}
+        users_with_same_score['right'] = {}
     return
 
-def searchUsersInRanking(rankingTree, score):
-    if rankingTree == {}:
-        return rankingTree
-    if rankingTree['root'][0] > score:
-        return searchUsersInRanking(rankingTree['left'], score)
-    elif rankingTree['root'][0] < score:
-        return searchUsersInRanking(rankingTree['right'], score)
-    elif rankingTree['root'][0] == score:
-        return rankingTree['root']
-    return []
-
-def deleteUserFromRanking(rankingTree, user):
-    usersScoreList = searchUsersInRanking(rankingTree, user.highestScore)
-    if len(usersScoreList) > 1:
-        for i in range(1, len(usersScoreList)):  # Pular o primeiro elemento (que é o score)
-            if usersScoreList[i].cpf == user.cpf:
-                usersScoreList.pop(i)
+def delete_user_from_ranking(ranking_tree : dict, user : User):
+    users_with_same_score = search_users_in_ranking(ranking_tree, user.highest_score)
+    if isinstance(users_with_same_score, list) and len(users_with_same_score) > 1:
+        for i in range(1, len(users_with_same_score)):  # Pular o primeiro elemento (que é o score)
+            if users_with_same_score[i].cpf == user.cpf:
+                users_with_same_score.pop(i)
                 break
-    # print("\n=#=#=#=#=#=#=#=DEPURACAO DELETE USER=#=#=#=#=#=#=#=#=#=#=")
-    # print(rankingTree)
+    return
+
+def update_user_high_score(rankingTree : dict, user : User, highScore : int):
+    delete_user_from_ranking(rankingTree, user) # Deleta buscando usuario com o score antigo
+    user.new_high_score(highScore) # Altera para score novo
+    insert_user_in_ranking(rankingTree, user) # Insere com score novo
+    return
